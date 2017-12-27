@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>The Library</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../static/css/searchPage/searchPageStyles.css" th:href="@{/css/searchPage/searchPageStyles.css}"
+          rel="stylesheet"/>
+    <link href="../static/css/searchPage/checkboxStyles.css" th:href="@{/css/searchPage/checkboxStyles.css}"
+          rel="stylesheet" type="text/css"/>
+    <link href="../static/css/searchPage/selectBoxStyles.css" th:href="@{/css/searchPage/selectBoxStyles.css}"
+          rel="stylesheet" type="text/css"/>
+    <link href="../static/css/searchPage/pagination.css" th:href="@{/css/searchPage/pagination.css}" rel="stylesheet"
+          type="text/css"/>
+    <link href="../static/css/searchPage/contentItemStyles.css" th:href="@{/css/searchPage/contentItemStyles.css}"
+          rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- header -->
+<div th:replace="header :: #intro"/>
+<!-- /header -->
+<!-- search box -->
+<form th:action="@{'/search/' + ${state lt 0 ? 'book' : 'author'}}" id="bookCreationBox" method="get">
+    <div id="search_choice">
+        <a th:href="@{/search/book(page=-1)}" th:attr="class=${state lt 0 ? 'active' : null}">Книги</a>
+        <a th:href="@{/search/author(page=-1)}" th:attr="class=${state gt 0 ? 'active' : null}">Автори</a>
+    </div>
+    <div id="search_fields">
+        <div th:if="${state lt 0}" class="flexsearch--form">
+            <input class="flexsearch--input" name="name" placeholder="Назва книги"/>
+        </div>
+        <div class="flexsearch--form">
+            <input class="flexsearch--input" th:attr="name=${state lt 0 ? 'author' : 'name'}"
+                   placeholder="Ім'я автора"/>
+        </div>
+        <div th:if="${state lt 0}" class="flexsearch--form">
+            <input class="flexsearch--input" name="tags" placeholder="Жанри, перечислені через кому"/>
+        </div>
+    </div>
+    <div th:if="${state lt 0}" id="r_part_search">
+        Рейтинг
+        <br/>
+        <div class="flexsearch--form">
+            <input class="flexsearch--input" name="min" placeholder="Min"/>
+        </div>
+        <div class="flexsearch--form">
+            <input class="flexsearch--input" name="max" placeholder="Max"/>
+        </div>
+        <div class="modal-2">
+            <div class="checkbox inline">
+                <input type="checkbox" name="same"/>
+                <label>Щось</label>
+            </div>
+        </div>
+        Сортувати за:
+        <br/>
+        <label>
+            <select name="sorting">
+                <option>RatioD</option>
+                <option>RatioA</option>
+                <option>NameA</option>
+                <option>NameD</option>
+            </select>
+        </label>
+    </div>
+    <input type="hidden" name="page" value="1"/>
+    <input class="myBtn" type="submit" value="Search"/>
+</form>
+<!-- /search box -->
+<!-- founded -->
+<div id="articles_container">
+    <!-- book items -->
+    <th:block th:if="${state lt 0}" th:each="book : ${books}">
+        <div class="item">
+            <h2 th:text="${book.getName()}">Founded 1</h2>
+            <p class="infopost">Автор:
+                <a th:href="@{'/author/' + ${book.getAuthor().getId()}}"
+                   th:text="${book.getAuthor().getName()}">Author</a> &nbsp;|&nbsp; Жанри:
+                <th:block th:each="genre : ${book.getGenres()}">
+                    <a th:href="@{/search/book/(page=1,tags=${genre.getName()})}"
+                       th:text="${genre.getName()} + ', '">genre1</a>
+                </th:block>
+            </p>
+            <img th:src="@{'/img/book/' + ${book.getId()}}" alt="image" class="fl"/>
+            <p th:text="${book.getDescription()}">Text</p>
+            <p class="spec"><a th:href="@{'/book/' + ${book.getId()}}" class="rm">Прочитати більше »</a></p>
+        </div>
+    </th:block>
+    <!-- /book items -->
+    <!-- author items -->
+    <th:block th:if="${state gt 0}" th:each="author : ${authors}">
+        <div class="item">
+            <h2 th:text="${author.getName()}">Founded 1</h2>
+            <img th:src="@{'/img/author/' + ${author.getId()}}" alt="image" class="fl"/>
+            <p th:text="${author.getDescription()}">Text</p>
+            <p class="spec"><a th:href="@{'/author/' + ${author.getId()}}" class="rm">Прочитати більше »</a></p>
+        </div>
+    </th:block>
+    <!-- /author items -->
+</div>
+<!-- pagination content -->
+<ul class="pagination modal-2" th:if="${state eq -1 or state eq 1}">
+    <li th:each="page : ${pages}">
+        <a th:href="@{${page.getReference()}}" th:attr="class=${page.getClassType()}" th:text="${page.getPageNumber()}">PageNum</a>
+    </li>
+</ul>
+<!-- /pagination content -->
+<!-- footer -->
+<div th:replace="footer :: #intro"/>
+<!-- /footer -->
+</body>
+</html>

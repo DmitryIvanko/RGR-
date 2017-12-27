@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link href="../static/css/headerStyles.css" th:href="@{/css/headerStyles.css}" rel="stylesheet"/>
+<body>
+<div id="intro" class="wrapper row1">
+    <header id="header" class="clear">
+        <div id="hgroup">
+            <h1><a th:href="@{/}">The Library</a></h1>
+            <h2>Безкоштовний пошуковий сервіс книг для всіх</h2>
+        </div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/}">На голову</a></li>
+                <li><a th:href="@{/search/book(page=-1)}">Пошук</a></li>
+                <li><a th:href="@{/search/book(page=1)}">Всі книги</a></li>
+                <li class="last"><a th:href="@{/search/author(page=1)}">Всі автори</a></li>
+            </ul>
+        </nav>
+    </header>
+</div>
+</body>
+</html>
